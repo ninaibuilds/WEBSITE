@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>NIN — Systems That Scale.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Syne:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --blk:#060606;--blk2:#0c0c0c;--blk3:#111;
+  --g:#C9A84C;--gd:#9E7E2F;--gl:#E8D38A;--gxl:#F5EAB8;
+  --w:#F5F5F0;--m:rgba(245,245,240,.52);--m2:rgba(245,245,240,.28);
+  --bdr:rgba(201,168,76,.14);--bdr2:rgba(201,168,76,.32);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--blk);color:var(--w);font-family:'Syne',sans-serif;font-size:16px;line-height:1.7;cursor:none;overflow-x:hidden}
+h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;line-height:1.06;letter-spacing:-.03em}
+a{color:inherit;text-decoration:none}
+::selection{background:rgba(201,168,76,.22)}
+img{display:block;max-width:100%}
+
+/* scroll progress */
+#spb{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--gd),var(--g),var(--gxl));z-index:9999;width:0;pointer-events:none}
+
+/* cursor */
+#cd{width:6px;height:6px;background:var(--g);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9997;transform:translate(-50%,-50%);transition:opacity .2s ease}
+#cr{width:30px;height:30px;border:1.5px solid rgba(201,168,76,.5);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9996;transform:translate(-50%,-50%);transition:width .2s ease,height .2s ease,border-color .2s ease}
+
+/* nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:800;display:flex;align-items:center;justify-content:space-between;padding:22px 60px;border-bottom:1px solid transparent;transition:all .4s ease}
+nav.on{background:rgba(6,6,6,.92);backdrop-filter:blur(22px);padding:14px 60px;border-color:var(--bdr)}
+.nlogo{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.nlogo-mark{width:38px;height:42px;flex-shrink:0;overflow:hidden}
+.nlogo-mark img{width:100%;height:100%;object-fit:contain}
+.nlogo-mark .svg-fb{display:none;width:100%;height:100%}
+.nlogo-word{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:600;letter-spacing:.22em;text-transform:uppercase}
+.nl{display:flex;align-items:center;gap:34px;list-style:none}
+.nl a{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--m);position:relative;transition:color .25s ease}
+.nl a::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1px;background:var(--g);transition:width .3s ease}
+.nl a:hover{color:var(--w)}.nl a:hover::after{width:100%}
+.ncta{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--blk);background:var(--g);padding:11px 26px;border:none;cursor:none;transition:background .22s ease,transform .2s ease}
+.ncta:hover{background:var(--gl);transform:translateY(-1px)}.ncta:active{transform:translateY(0)}
+.hbg{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:none;padding:4px}
+.hbg span{display:block;width:22px;height:1.5px;background:var(--w);transition:transform .3s,opacity .3s}
+.hbg.on span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.hbg.on span:nth-child(2){opacity:0}
+.hbg.on span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+.mob{display:none;position:fixed;inset:0;background:var(--blk);z-index:700;flex-direction:column;align-items:center;justify-content:center;gap:30px}
+.mob.on{display:flex}
+.mob a{font-family:'Cormorant Garamond',serif;font-size:46px;font-weight:300;color:var(--m);transition:color .2s}
+.mob a:hover{color:var(--g)}
+
+/* hero */
+#hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:140px 60px 120px}
+#hcv{position:absolute;inset:0;z-index:0}
+.hgrid{position:absolute;inset:0;z-index:1;background-image:linear-gradient(rgba(201,168,76,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,.04) 1px,transparent 1px);background-size:70px 70px;mask-image:radial-gradient(ellipse 88% 80% at 50% 50%,black 20%,transparent 100%);animation:gdrift 25s linear infinite}
+@keyframes gdrift{0%{background-position:0 0}100%{background-position:70px 70px}}
+.ho{position:absolute;border-radius:50%;filter:blur(100px);pointer-events:none}
+.ho1{width:800px;height:700px;background:radial-gradient(ellipse,rgba(201,168,76,.16) 0%,transparent 65%);top:-20%;left:50%;animation:hoa 10s ease-in-out infinite alternate}
+.ho2{width:460px;height:420px;background:radial-gradient(ellipse,rgba(201,168,76,.08) 0%,transparent 65%);bottom:5%;left:-5%;animation:hob 13s ease-in-out infinite alternate}
+.ho3{width:340px;height:340px;background:radial-gradient(ellipse,rgba(201,168,76,.06) 0%,transparent 65%);top:20%;right:-3%;animation:hob 10s ease-in-out infinite alternate-reverse}
+@keyframes hoa{from{opacity:.6;transform:translateX(-50%) scale(1)}to{opacity:1;transform:translateX(-50%) scale(1.22)}}
+@keyframes hob{from{opacity:.4;transform:scale(1)}to{opacity:.9;transform:scale(1.2)}}
+.hi{position:relative;z-index:2;text-align:center;max-width:940px}
+.hbadge{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--bdr);background:rgba(201,168,76,.07);padding:7px 20px;margin-bottom:36px;font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--g);animation:fu .8s ease both}
+.hbdot{width:6px;height:6px;border-radius:50%;background:var(--g);animation:bpulse 2s ease-in-out infinite}
+@keyframes bpulse{0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,.6)}50%{box-shadow:0 0 0 8px rgba(201,168,76,0)}}
+/* hero logo */
+.hmark{width:120px;height:132px;margin:0 auto 28px;animation:lev 6s ease-in-out infinite alternate,fu .9s .1s ease both;animation-fill-mode:both;filter:drop-shadow(0 0 55px rgba(201,168,76,.5))}
+.hmark img{width:100%;height:100%;object-fit:contain;display:block}
+.hmark .svg-fb{display:none;width:100%;height:100%}
+@keyframes lev{from{transform:translateY(0)}to{transform:translateY(-14px)}}
+.hh1{font-size:clamp(56px,9vw,116px);font-weight:300;color:var(--w);margin-bottom:8px;animation:fu 1s .2s ease both}
+.hh1 .grad{font-style:italic;background:linear-gradient(135deg,var(--gxl),var(--g) 50%,var(--gd));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hsub{font-family:'Cormorant Garamond',serif;font-size:clamp(19px,2.8vw,34px);font-weight:300;font-style:italic;color:var(--m);margin-bottom:24px;animation:fu 1s .3s ease both}
+.hp{font-size:16px;color:var(--m);max-width:520px;margin:0 auto 50px;line-height:1.9;animation:fu 1s .4s ease both}
+.hbtns{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;animation:fu 1s .5s ease both}
+@keyframes fu{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.hscr{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:7px;z-index:2}
+.hscr span{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--m2)}
+.hln{width:1px;height:44px;background:linear-gradient(to bottom,var(--g),transparent);animation:sl 2s ease-in-out infinite}
+@keyframes sl{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:10px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:15px 34px;border:none;cursor:none;position:relative;overflow:hidden;transition:transform .25s ease,box-shadow .25s ease}
+.btn::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,.16);transform:translateX(-101%);transition:transform .35s ease}
+.btn:hover{transform:translateY(-2px)}.btn:hover::before{transform:translateX(0)}.btn:active{transform:translateY(0)}
+.btn-g{background:linear-gradient(135deg,var(--gl),var(--g),var(--gd));color:var(--blk);box-shadow:0 6px 30px rgba(201,168,76,.22)}
+.btn-g:hover{box-shadow:0 12px 44px rgba(201,168,76,.4)}
+.btn-o{background:rgba(201,168,76,.06);color:var(--w);border:1px solid var(--bdr)}
+.btn-o:hover{background:rgba(201,168,76,.12);border-color:var(--bdr2)}
+.asv{width:14px;flex-shrink:0}
+/* ripple */
+.btn .rpl{position:absolute;border-radius:50%;background:rgba(255,255,255,.28);transform:scale(0);animation:rp .6s linear;pointer-events:none}
+@keyframes rp{to{transform:scale(4);opacity:0}}
+
+/* marquee */
+.mq{padding:22px 0;overflow:hidden;background:rgba(201,168,76,.02);border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr)}
+.mq-t{display:flex;animation:mq 24s linear infinite;white-space:nowrap}
+.mq-t:hover{animation-play-state:paused}
+@keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.mi{display:inline-flex;align-items:center;gap:16px;padding:0 30px;font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--m);flex-shrink:0}
+.mi::before{content:'◆';color:var(--g);font-size:7px}
+
+/* stats */
+#stats{padding:52px 60px;display:flex;align-items:stretch;gap:0;background:var(--blk2);border-bottom:1px solid var(--bdr);flex-wrap:wrap}
+.st{flex:1;min-width:150px;text-align:center;padding:14px 24px;border-right:1px solid var(--bdr)}
+.st:last-child{border-right:none}
+.stn{font-family:'Cormorant Garamond',serif;font-size:56px;font-weight:300;line-height:1;background:linear-gradient(135deg,var(--gl),var(--g));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px}
+.stl{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--m)}
+
+/* sections */
+.sec{padding:110px 60px;position:relative;overflow:hidden}
+.sec-alt{background:var(--blk2)}
+section,.sec,#stats,#cta,#pricing,#team,#about,#services,#industries,#process,#contact{scroll-margin-top:90px}
+.dvd{height:1px;background:linear-gradient(90deg,transparent,var(--bdr) 20%,var(--bdr) 80%,transparent)}
+.eye{display:inline-flex;align-items:center;gap:12px;font-size:11px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:var(--g);margin-bottom:16px}
+.eye::before{content:'';display:block;width:24px;height:1px;background:var(--g)}
+.stitle{font-size:clamp(36px,5vw,64px);font-weight:300;color:var(--w);margin-bottom:18px}
+.stitle em{font-style:italic;color:var(--g)}
+.stitle .gg{background:linear-gradient(135deg,var(--gxl),var(--g),var(--gd));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-style:italic}
+.sbody{font-size:15.5px;color:var(--m);max-width:500px;line-height:1.9}
+.rv{opacity:0;transform:translateY(28px);transition:opacity .7s cubic-bezier(.2,.65,.3,1),transform .7s cubic-bezier(.2,.65,.3,1)}
+.rv-l{opacity:0;transform:translateX(-28px);transition:opacity .7s cubic-bezier(.2,.65,.3,1),transform .7s cubic-bezier(.2,.65,.3,1)}
+.rv-r{opacity:0;transform:translateX(28px);transition:opacity .7s cubic-bezier(.2,.65,.3,1),transform .7s cubic-bezier(.2,.65,.3,1)}
+.rv.in,.rv-l.in,.rv-r.in{opacity:1;transform:translate(0)}
+
+/* about */
+.ag{display:grid;grid-template-columns:1fr 1fr;gap:90px;align-items:center}
+.atags{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
+.atag{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--g);border:1px solid var(--bdr);background:rgba(201,168,76,.04);padding:6px 14px;transition:background .2s,border-color .2s}
+.atag:hover{background:rgba(201,168,76,.1);border-color:var(--bdr2)}
+.acard{background:rgba(201,168,76,.03);border:1px solid var(--bdr);padding:44px 38px;position:relative;overflow:hidden}
+.acard::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--g),transparent)}
+.acard::after{content:'';position:absolute;bottom:-1px;right:-1px;width:60px;height:60px;border-top:1px solid var(--bdr);border-left:1px solid var(--bdr);background:rgba(201,168,76,.04)}
+.aqt{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;font-style:italic;color:var(--w);line-height:1.55;margin-bottom:28px}
+.aqt span{color:var(--g)}
+.fa{display:flex;gap:12px;align-items:center}
+.fav{width:40px;height:40px;border-radius:50%;background:rgba(201,168,76,.12);border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;color:var(--g);flex-shrink:0}
+
+/* team */
+.tletters{display:flex;align-items:flex-start;justify-content:center;gap:24px;margin:56px 0 0}
+.tl{display:flex;flex-direction:column;align-items:center;flex:1;max-width:240px;cursor:none}
+.tl-char{font-family:'Cormorant Garamond',serif;font-size:clamp(88px,14vw,170px);font-weight:300;line-height:.9;color:rgba(201,168,76,.15);transition:color .35s ease,text-shadow .35s ease;user-select:none;padding-bottom:12px}
+.tl:hover .tl-char{color:var(--g);text-shadow:0 0 80px rgba(201,168,76,.4)}
+.tl-bar{width:1px;height:0;background:linear-gradient(to bottom,var(--g),transparent);transition:height .4s cubic-bezier(.2,.65,.3,1);position:relative}
+.tl-bar::after{content:'▼';position:absolute;bottom:-14px;left:50%;transform:translateX(-50%);color:var(--g);font-size:9px;opacity:0;transition:opacity .3s ease .2s}
+.tl:hover .tl-bar{height:48px}.tl:hover .tl-bar::after{opacity:1}
+.tcard{background:rgba(201,168,76,.03);border:1px solid var(--bdr);padding:28px 24px;width:100%;text-align:center;opacity:0;transform:translateY(10px);transition:opacity .4s ease .15s,transform .4s cubic-bezier(.2,.65,.3,1) .15s,border-color .3s;margin-top:16px}
+.tl:hover .tcard{opacity:1;transform:translateY(0);border-color:var(--bdr2)}
+.tc-av{width:48px;height:48px;border-radius:50%;background:rgba(201,168,76,.1);border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:18px;color:var(--g);font-weight:600;margin:0 auto 14px;transition:background .3s}
+.tl:hover .tc-av{background:rgba(201,168,76,.22)}
+.tc-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:var(--w);margin-bottom:4px}
+.tc-role{font-size:10.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--g);margin-bottom:10px}
+.tc-bio{font-size:13px;color:var(--m);line-height:1.7}
+
+/* services */
+.sv-hd{display:flex;align-items:flex-end;justify-content:space-between;gap:40px;flex-wrap:wrap;margin-bottom:56px}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:1px;background:var(--bdr)}
+.sc{background:var(--blk2);padding:38px 32px;position:relative;overflow:hidden;cursor:none;transition:background .3s}
+.sc::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(201,168,76,.055) 0%,transparent 55%);opacity:0;transition:opacity .35s}
+.sc::after{content:'';position:absolute;bottom:0;left:0;width:0;height:1.5px;background:linear-gradient(90deg,var(--gd),var(--gxl));transition:width .45s cubic-bezier(.2,.65,.3,1)}
+.sc:hover{background:#0f0f0f}.sc:hover::before{opacity:1}.sc:hover::after{width:100%}
+.scn{font-family:'Cormorant Garamond',serif;font-size:12px;color:rgba(201,168,76,.3);letter-spacing:.1em;margin-bottom:24px}
+.sct{font-size:clamp(19px,2vw,23px);font-weight:300;color:var(--w);margin-bottom:12px}
+.scd{font-size:13.5px;color:var(--m);line-height:1.75;margin-bottom:20px}
+.sc-order{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--blk);background:linear-gradient(135deg,var(--gl),var(--g));padding:8px 16px;border:none;cursor:none;transition:transform .2s,box-shadow .2s;position:relative;overflow:hidden}
+.sc-order:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(201,168,76,.3)}
+
+/* pricing */
+.pg3{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bdr)}
+.pc{background:var(--blk2);padding:48px 36px;position:relative;overflow:hidden;transition:background .3s}
+.pc.feat{background:var(--blk3)}
+.pc:hover{background:#0f0f0f}
+.pc.feat::before{content:'';position:absolute;inset:-2px;background:conic-gradient(from var(--a,0deg),transparent 70%,var(--g) 80%,var(--gxl) 85%,var(--g) 90%,transparent);animation:cspin 4s linear infinite;z-index:0}
+@property --a{syntax:'<angle>';inherits:false;initial-value:0deg}
+@keyframes cspin{to{--a:360deg}}
+.pc.feat::after{content:'';position:absolute;inset:2px;background:var(--blk3);z-index:1}
+.pc-in{position:relative;z-index:2}
+.pc-badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--blk);background:var(--g);padding:4px 12px;margin-bottom:24px}
+.pc-name{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;color:var(--w);margin-bottom:6px}
+.pc-price{font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:300;line-height:1;color:var(--g);margin-bottom:4px}
+.pc-price sup{font-size:22px;vertical-align:top;margin-top:12px;display:inline-block}
+.pc-period{font-size:13px;color:var(--m);margin-bottom:28px}
+.pc-ul{list-style:none;display:flex;flex-direction:column;gap:11px;margin-bottom:36px}
+.pc-ul li{display:flex;align-items:flex-start;gap:10px;font-size:14px;color:var(--m)}
+.pc-ul li::before{content:'→';color:var(--g);font-size:12px;flex-shrink:0;margin-top:2px}
+.pc-ul li.dim{color:rgba(245,245,240,.2);text-decoration:line-through}
+.pc-ul li.dim::before{color:rgba(245,245,240,.15)}
+
+/* industries */
+.ig{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.ic{background:rgba(201,168,76,.025);border:1px solid var(--bdr);padding:48px 24px 38px;text-align:center;cursor:none;position:relative;overflow:hidden;transition:transform .35s cubic-bezier(.2,.65,.3,1),border-color .3s,box-shadow .35s}
+.ic::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% -5%,rgba(201,168,76,.1) 0%,transparent 65%);opacity:0;transition:opacity .35s}
+.ic:hover{transform:translateY(-12px);border-color:var(--bdr2);box-shadow:0 28px 70px rgba(201,168,76,.1)}
+.ic:hover::before{opacity:1}
+.ici{width:58px;height:58px;margin:0 auto 22px;background:rgba(201,168,76,.08);border:1px solid var(--bdr);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;transition:background .3s,transform .35s}
+.ic:hover .ici{background:rgba(201,168,76,.2);transform:scale(1.1)}
+.icn{font-size:clamp(18px,2vw,22px);font-weight:300;color:var(--w);margin-bottom:8px}
+.icd{font-size:13.5px;color:var(--m);line-height:1.75}
+.mkt-r{margin-top:52px;padding:26px 36px;border:1px solid var(--bdr);background:rgba(201,168,76,.025);display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.mkt-l{font-size:10.5px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--g)}
+.mkt-t{font-size:14px;font-weight:500;color:var(--m)}
+
+/* process */
+.prg{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative;margin-top:64px}
+.prg::before{content:'';position:absolute;top:32px;left:6%;right:6%;height:1px;background:linear-gradient(90deg,transparent,var(--bdr) 15%,var(--bdr) 85%,transparent)}
+.ps{padding:0 20px;text-align:center}
+.psn{width:64px;height:64px;border-radius:50%;border:1px solid var(--bdr);background:var(--blk2);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:var(--g);position:relative;z-index:1;transition:background .3s,border-color .3s,box-shadow .3s}
+.ps:hover .psn{background:rgba(201,168,76,.12);border-color:var(--g);box-shadow:0 0 30px rgba(201,168,76,.2)}
+.pst{font-size:20px;font-weight:300;color:var(--w);margin-bottom:9px}
+.psd{font-size:13.5px;color:var(--m);line-height:1.75}
+
+/* contact */
+.cg{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+.cpnt{display:flex;flex-direction:column;gap:18px;margin-top:32px}
+.cp{display:flex;align-items:flex-start;gap:14px}
+.cp-ic{width:40px;height:40px;border:1px solid var(--bdr);background:rgba(201,168,76,.05);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.cp-ic svg{width:17px;color:var(--g)}
+.cp-t strong{display:block;font-size:14px;font-weight:600;color:var(--w);margin-bottom:2px}
+.cp-t span{font-size:13.5px;color:var(--m)}
+.cf{background:rgba(201,168,76,.03);border:1px solid var(--bdr);padding:44px 38px;position:relative}
+.cf::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--g),transparent)}
+.fg{margin-bottom:18px}
+.fg label{display:block;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--m);margin-bottom:7px}
+.fg input,.fg select,.fg textarea{width:100%;background:rgba(255,255,255,.03);border:1px solid var(--bdr);color:var(--w);font-family:'Syne',sans-serif;font-size:14px;padding:12px 15px;outline:none;transition:border-color .25s,background .25s;resize:none}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--g);background:rgba(201,168,76,.04)}
+.fg select option{background:var(--blk);color:var(--w)}
+.fg textarea{height:110px}
+.fr{display:flex;gap:14px;flex-wrap:wrap}
+.fr .fg{flex:1;min-width:130px}
+.fnote{font-size:12px;color:var(--m2);margin-top:12px;line-height:1.6}
+
+/* success msg */
+.form-success{display:none;background:rgba(201,168,76,.08);border:1px solid var(--bdr2);padding:20px 24px;text-align:center;font-size:14px;color:var(--g);font-weight:600;letter-spacing:.05em;margin-top:16px}
+
+/* cta band */
+#cta{padding:0;position:relative;overflow:hidden;border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr);background:linear-gradient(135deg,rgba(201,168,76,.1),rgba(201,168,76,.03) 50%,rgba(201,168,76,.1))}
+.cta-orb{position:absolute;width:700px;height:500px;background:radial-gradient(ellipse,rgba(201,168,76,.18) 0%,transparent 60%);top:-30%;left:50%;transform:translateX(-50%);filter:blur(80px);border-radius:50%;pointer-events:none}
+.cta-in{padding:96px 60px;display:flex;align-items:center;justify-content:space-between;gap:60px;flex-wrap:wrap;position:relative;z-index:2}
+.cta-l .stitle{margin-bottom:14px}
+.cta-l p{font-size:16px;color:var(--m);max-width:440px;line-height:1.9}
+.cta-r{display:flex;flex-direction:column;align-items:flex-end;gap:16px}
+.cta-em{font-size:13.5px;color:var(--m);display:flex;align-items:center;gap:9px;transition:color .25s}
+.cta-em:hover{color:var(--g)}.cta-em svg{color:var(--g);width:15px;flex-shrink:0}
+
+/* footer */
+footer{padding:60px 60px 34px;border-top:1px solid var(--bdr)}
+.ft{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:52px;margin-bottom:52px}
+.fb p{font-size:13.5px;color:var(--m);line-height:1.85;max-width:230px;margin-top:14px}
+.fc h5{font-family:'Syne',sans-serif;font-size:10.5px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--g);margin-bottom:18px}
+.fc ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+.fc ul li a{font-size:13.5px;color:var(--m);transition:color .2s}
+.fc ul li a:hover{color:var(--w)}
+.fbot{display:flex;align-items:center;justify-content:space-between;padding-top:20px;border-top:1px solid var(--bdr);gap:12px;flex-wrap:wrap}
+.fbot p{font-size:12.5px;color:rgba(245,245,240,.25)}
+.fbot a{font-size:12.5px;color:rgba(201,168,76,.5);transition:color .2s}
+.fbot a:hover{color:var(--g)}
+
+/* order modal */
+#overlay{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:9000;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(10px)}
+#overlay.on{opacity:1;pointer-events:all}
+.modal{background:var(--blk2);border:1px solid var(--bdr);padding:48px 44px;width:100%;max-width:600px;position:relative;transform:translateY(20px) scale(.97);transition:transform .3s cubic-bezier(.2,.65,.3,1);max-height:90vh;overflow-y:auto}
+#overlay.on .modal{transform:translateY(0) scale(1)}
+.modal::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--g),transparent)}
+.modal-close{position:absolute;top:16px;right:16px;background:none;border:none;cursor:none;color:var(--m);font-size:24px;line-height:1;padding:4px 8px;transition:color .2s}
+.modal-close:hover{color:var(--w)}
+.modal h3{font-size:34px;font-weight:300;color:var(--w);margin-bottom:6px}
+.modal-sub{font-size:14px;color:var(--m);margin-bottom:24px}
+.modal-svc{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--blk);background:var(--g);padding:5px 14px;margin-bottom:28px}
+.step-indicator{display:flex;align-items:center;gap:8px;margin-bottom:28px}
+.step-dot{width:28px;height:28px;border-radius:50%;border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--m);transition:all .3s}
+.step-dot.active{background:var(--g);border-color:var(--g);color:var(--blk)}
+.step-dot.done{background:rgba(201,168,76,.2);border-color:var(--g);color:var(--g)}
+.step-line{flex:1;height:1px;background:var(--bdr)}
+.step-pane{display:none}.step-pane.active{display:block}
+.step-nav{display:flex;gap:12px;margin-top:24px}
+.option-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px}
+.opt{border:1px solid var(--bdr);padding:12px 16px;font-size:13px;font-weight:500;color:var(--m);background:rgba(255,255,255,.02);cursor:none;transition:all .2s;text-align:left}
+.opt:hover{border-color:var(--bdr2);background:rgba(201,168,76,.07);color:var(--w)}
+.opt.sel{border-color:var(--g);background:rgba(201,168,76,.12);color:var(--g)}
+.modal-success{text-align:center;padding:20px 0;display:none}
+.modal-success .s-icon{font-size:48px;margin-bottom:16px}
+.modal-success h4{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--w);margin-bottom:10px}
+.modal-success p{font-size:14px;color:var(--m)}
+
+/* chat */
+#cbtn{position:fixed;bottom:28px;right:28px;width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,var(--gl),var(--g),var(--gd));border:none;cursor:none;z-index:9000;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 28px rgba(201,168,76,.35);transition:transform .25s,box-shadow .25s}
+#cbtn:hover{transform:scale(1.1);box-shadow:0 12px 44px rgba(201,168,76,.5)}
+#cbtn svg{width:23px;color:var(--blk)}
+.ic-cl{display:none}
+#cbtn.on .ic-ch{display:none}
+#cbtn.on .ic-cl{display:block}
+.cpls{position:absolute;inset:-5px;border-radius:50%;border:2px solid rgba(201,168,76,.3);animation:cpls 2.5s ease-out infinite;pointer-events:none}
+@keyframes cpls{0%{transform:scale(1);opacity:1}100%{transform:scale(1.75);opacity:0}}
+#cpanel{position:fixed;bottom:96px;right:28px;width:360px;height:520px;background:#0d0d0d;border:1px solid var(--bdr);display:flex;flex-direction:column;z-index:8999;box-shadow:0 28px 80px rgba(0,0,0,.75);transform:translateY(14px) scale(.97);opacity:0;pointer-events:none;transition:transform .3s cubic-bezier(.2,.65,.3,1),opacity .3s}
+#cpanel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--g),transparent);pointer-events:none}
+#cpanel.on{transform:translateY(0) scale(1);opacity:1;pointer-events:all}
+.ch{padding:16px 18px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:11px;flex-shrink:0}
+.cav{width:34px;height:34px;border-radius:50%;background:rgba(201,168,76,.1);border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:15px;color:var(--g);font-weight:600;flex-shrink:0}
+.cmeta .cn{font-size:13.5px;font-weight:600;color:var(--w)}
+.cmeta .cs{font-size:11px;color:var(--m);display:flex;align-items:center;gap:5px}
+.sdot{width:5px;height:5px;border-radius:50%;background:#4ade80;animation:sd 2s ease infinite alternate}
+@keyframes sd{from{opacity:1}to{opacity:.3}}
+.cmsgs{flex:1;overflow-y:auto;padding:14px 12px;display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth}
+.cmsgs::-webkit-scrollbar{width:3px}
+.cmsgs::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:2px}
+.cmsg{display:flex;gap:7px;align-items:flex-end;animation:mia .3s ease}
+@keyframes mia{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.cmsg.u{flex-direction:row-reverse}
+.bbl{max-width:78%;padding:9px 13px;font-size:13px;line-height:1.65;border-radius:2px}
+.cmsg.b .bbl{background:rgba(201,168,76,.07);border:1px solid var(--bdr);color:var(--w)}
+.cmsg.u .bbl{background:linear-gradient(135deg,var(--gl),var(--g));color:var(--blk);font-weight:500}
+.mts{font-size:9.5px;color:rgba(245,245,240,.22);flex-shrink:0;margin-bottom:1px}
+.typ{display:flex;gap:4px;padding:10px 13px;background:rgba(201,168,76,.07);border:1px solid var(--bdr)}
+.typ span{width:5px;height:5px;border-radius:50%;background:var(--g);opacity:.4;animation:td 1.2s ease-in-out infinite}
+.typ span:nth-child(2){animation-delay:.2s}.typ span:nth-child(3){animation-delay:.4s}
+@keyframes td{0%,60%,100%{opacity:.4;transform:translateY(0)}30%{opacity:1;transform:translateY(-4px)}}
+.cchips{display:flex;flex-wrap:wrap;gap:6px;padding:0 12px 10px}
+.chip{font-size:11px;font-weight:500;color:var(--g);border:1px solid var(--bdr);padding:5px 11px;background:rgba(201,168,76,.04);cursor:none;transition:background .2s,border-color .2s;white-space:nowrap}
+.chip:hover{background:rgba(201,168,76,.1);border-color:var(--bdr2)}
+.cinp{display:flex;border-top:1px solid var(--bdr);flex-shrink:0}
+#cin{flex:1;background:transparent;border:none;outline:none;padding:14px 14px;font-family:'Syne',sans-serif;font-size:13.5px;color:var(--w)}
+#cin::placeholder{color:rgba(245,245,240,.25)}
+#cgo{width:48px;background:linear-gradient(135deg,var(--gl),var(--g));border:none;cursor:none;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity .2s}
+#cgo:hover{opacity:.85}
+#cgo svg{width:16px;color:var(--blk)}
+#cgo:disabled{opacity:.35}
+
+/* responsive */
+@media(max-width:1100px){
+  .ag{grid-template-columns:1fr;gap:52px}
+  .ig{grid-template-columns:repeat(2,1fr)}
+  .prg{grid-template-columns:repeat(2,1fr);gap:44px}.prg::before{display:none}
+  .ft{grid-template-columns:1fr 1fr}
+  .cg{grid-template-columns:1fr;gap:52px}
+  .pg3{grid-template-columns:1fr}
+}
+@media(max-width:768px){
+  nav{padding:18px 22px}nav.on{padding:13px 22px}
+  .nl,.ncta{display:none}.hbg{display:flex}
+  .sec{padding:80px 22px}
+  #hero{padding:120px 22px 100px}
+  #stats{padding:32px 22px}
+  .ig{grid-template-columns:1fr 1fr;gap:10px}
+  .prg{grid-template-columns:1fr}
+  .cta-in{padding:68px 22px;flex-direction:column}.cta-r{align-items:flex-start}
+  footer{padding:44px 22px 28px}.ft{grid-template-columns:1fr;gap:30px}
+  .fbot{flex-direction:column;align-items:flex-start}
+  .sg{grid-template-columns:1fr}
+  .tletters{gap:8px}.tl-char{font-size:clamp(64px,18vw,110px)}
+  .st{border-right:none;border-bottom:1px solid var(--bdr)}.st:last-child{border-bottom:none}
+  .modal{padding:36px 24px}
+  .option-grid{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+  .ig{grid-template-columns:1fr}.hbtns{flex-direction:column;align-items:center}
+  .btn{width:100%;justify-content:center}
+  #cpanel{width:calc(100vw - 16px);right:8px;bottom:88px}
+  #cbtn{bottom:16px;right:14px}
+}
+@media(hover:none){#cd,#cr{display:none}body{cursor:auto}a,button,input,select,textarea{cursor:pointer}}
+</style>
+</head>
+<body>
+
+<div id="spb"></div>
+<div id="cd"></div>
+<div id="cr"></div>
+
+<!-- shared SVG gradients -->
+<svg width="0" height="0" style="position:absolute;overflow:hidden">
+  <defs>
+    <linearGradient id="gG" x1="15%" y1="0%" x2="85%" y2="100%">
+      <stop offset="0%" stop-color="#F0DC7C"/>
+      <stop offset="35%" stop-color="#D4A843"/>
+      <stop offset="70%" stop-color="#B8892A"/>
+      <stop offset="100%" stop-color="#8B6310"/>
+    </linearGradient>
+    <linearGradient id="gDa" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#686868"/>
+      <stop offset="45%" stop-color="#353535"/>
+      <stop offset="100%" stop-color="#181818"/>
+    </linearGradient>
+    <linearGradient id="gDb" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#454545"/>
+      <stop offset="100%" stop-color="#0e0e0e"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#hero" class="nlogo">
+    <div class="nlogo-mark">
+      <img src="NIN logo.png" alt="NIN" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/>
+      <svg class="svg-fb" viewBox="0 0 440 470" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="60,400 162,400 172,80 70,80" fill="url(#gG)"/>
+        <polygon points="195,248 246,248 252,80 201,80" fill="url(#gDa)"/>
+        <polygon points="190,400 241,400 247,262 196,262" fill="url(#gDb)"/>
+        <polygon points="270,400 368,400 376,80 278,80" fill="url(#gG)"/>
+        <text x="219" y="450" text-anchor="middle" fill="#F5F5F0" font-family="Space Grotesk,sans-serif" font-size="32" font-weight="300" letter-spacing="20">NIN</text>
+      </svg>
+    </div>
+    <span class="nlogo-word">NIN</span>
+  </a>
+  <ul class="nl">
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#team">Team</a></li>
+    <li><a href="#industries">Industries</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a class="ncta" href="#pricing">Order Now</a>
+  <button class="hbg" id="hbg" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="mob" id="mob">
+  <a href="#about"      onclick="cm()">About</a>
+  <a href="#services"   onclick="cm()">Services</a>
+  <a href="#pricing"    onclick="cm()" style="color:var(--g)">Pricing</a>
+  <a href="#team"       onclick="cm()">Team</a>
+  <a href="#contact"    onclick="cm()">Contact</a>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <canvas id="hcv"></canvas>
+  <div class="hgrid"></div>
+  <div class="ho ho1"></div>
+  <div class="ho ho2"></div>
+  <div class="ho ho3"></div>
+  <div class="hi">
+    <div class="hbadge"><div class="hbdot"></div>AI Automation Agency · Ghana &amp; UK</div>
+    <div class="hmark">
+      <img src="NIN logo.png" alt="NIN" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/>
+      <svg class="svg-fb" viewBox="0 0 440 470" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="60,400 162,400 172,80 70,80" fill="url(#gG)"/>
+        <polygon points="195,248 246,248 252,80 201,80" fill="url(#gDa)"/>
+        <polygon points="190,400 241,400 247,262 196,262" fill="url(#gDb)"/>
+        <polygon points="270,400 368,400 376,80 278,80" fill="url(#gG)"/>
+        <text x="219" y="450" text-anchor="middle" fill="#F5F5F0" font-family="Space Grotesk,sans-serif" font-size="32" font-weight="300" letter-spacing="20">NIN</text>
+      </svg>
+    </div>
+    <h1 class="hh1"><span class="grad">Systems</span> That Scale.</h1>
+    <p class="hsub">Three founders. Zero shortcuts. All results.</p>
+    <p class="hp">We build AI automation systems that make your business run without you having to run it — chatbots, agents, pipelines, and workflows. Deployed. Not demoed.</p>
+    <div class="hbtns">
+      <a class="btn btn-g" href="#pricing">
+        Order a System
+        <svg class="asv" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+      </a>
+      <a class="btn btn-o" href="#services">See What We Build</a>
+    </div>
+  </div>
+  <div class="hscr"><span>Scroll</span><div class="hln"></div></div>
+</section>
+
+<!-- MARQUEE -->
+<div class="mq"><div class="mq-t" id="mqt"></div></div>
+
+<!-- STATS -->
+<div id="stats">
+  <div class="st rv"><div class="stn" data-t="10">0</div><div class="stl">Services</div></div>
+  <div class="st rv" style="transition-delay:.08s"><div class="stn" data-t="4">0</div><div class="stl">Industries</div></div>
+  <div class="st rv" style="transition-delay:.16s"><div class="stn" data-t="2">0</div><div class="stl">Markets</div></div>
+  <div class="st rv" style="transition-delay:.24s"><div class="stn" data-t="3">0</div><div class="stl">Founders</div></div>
+  <div class="st rv" style="transition-delay:.32s"><div class="stn" data-t="24">0</div><div class="stl">hr Response</div></div>
+</div>
+<div class="dvd"></div>
+
+<!-- ABOUT -->
+<section id="about" class="sec sec-alt">
+  <div class="ag">
+    <div class="rv-l">
+      <div class="eye">Who We Are</div>
+      <h2 class="stitle">Founded in high school.<br/><em>Engineered to last.</em></h2>
+      <p class="sbody">NIN is built by three founders who spent the last two years of school mastering AI, automation, and workflow engineering — no funding, no mentors, no shortcuts. Just late nights and shipped work.</p>
+      <p class="sbody" style="margin-top:14px">We operate across Ghana and the UK, building systems that don't just look good in demos — they run businesses.</p>
+      <div class="atags">
+        <span class="atag">AI Automation</span><span class="atag">Workflow Engineering</span><span class="atag">Chatbots</span>
+        <span class="atag">Voice AI</span><span class="atag">CRM Systems</span><span class="atag">Multi-Agent AI</span>
+      </div>
+    </div>
+    <div class="rv-r">
+      <div class="acard">
+        <p class="aqt">"We didn't study automation from the sidelines. We built real systems, for real businesses, <span>from scratch.</span>"</p>
+        <div class="fa">
+          <div class="fav">N</div><div class="fav">I</div><div class="fav">N</div>
+          <div style="font-size:13px;color:var(--m)"><strong style="color:var(--w);font-weight:600;display:block;margin-bottom:2px">The NIN Founders</strong>Ghana · United Kingdom</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="dvd"></div>
+
+<!-- TEAM -->
+<section id="team" class="sec">
+  <div style="text-align:center;max-width:560px;margin:0 auto" class="rv">
+    <div class="eye" style="justify-content:center">The Founders</div>
+    <h2 class="stitle">The three people<br/><em>behind NIN</em></h2>
+    <p class="sbody" style="margin:12px auto 0">Hover each letter to meet the team.</p>
+  </div>
+  <div class="tletters">
+    <div class="tl">
+      <div class="tl-char">N</div>
+      <div class="tl-bar"></div>
+      <div class="tcard">
+        <div class="tc-av">N</div>
+        <div class="tc-name">Nohlan Tax-Valence</div>
+        <div class="tc-role">Co-Founder</div>
+        <p class="tc-bio">Systems architect. Builds the pipelines, workflows, and multi-agent systems at the core of every NIN project.</p>
+      </div>
+    </div>
+    <div class="tl">
+      <div class="tl-char">I</div>
+      <div class="tl-bar"></div>
+      <div class="tcard">
+        <div class="tc-av">I</div>
+        <div class="tc-name">Ishan Patnaik</div>
+        <div class="tc-role">Co-Founder</div>
+        <p class="tc-bio">Product and client strategy. Translates business problems into automation architecture that delivers real results.</p>
+      </div>
+    </div>
+    <div class="tl">
+      <div class="tl-char">N</div>
+      <div class="tl-bar"></div>
+      <div class="tcard">
+        <div class="tc-av">N</div>
+        <div class="tc-name">Nana Kwesi</div>
+        <div class="tc-role">Co-Founder</div>
+        <p class="tc-bio">Growth and operations. Drives market presence across Ghana and the UK and ensures every project ships on time.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="dvd"></div>
+
+<!-- SERVICES -->
+<section id="services" class="sec sec-alt">
+  <div class="sv-hd rv">
+    <div>
+      <div class="eye">What We Build</div>
+      <h2 class="stitle">Ten Systems.<br/><em>One Agency.</em></h2>
+    </div>
+    <p class="sbody">Every service is scoped from scratch for your business. No templates.</p>
+  </div>
+  <div class="sg" id="sg"></div>
+</section>
+<div class="dvd"></div>
+
+<!-- PRICING -->
+<section id="pricing" class="sec">
+  <div class="rv" style="text-align:center;max-width:600px;margin:0 auto 56px">
+    <div class="eye" style="justify-content:center">Pricing</div>
+    <h2 class="stitle">Pick your <em>package.</em><br/>We'll build it.</h2>
+    <p class="sbody" style="margin:14px auto 0">Transparent pricing. Free discovery call before we start anything.</p>
+  </div>
+  <div class="pg3" id="pg3"></div>
+</section>
+<div class="dvd"></div>
+
+<!-- INDUSTRIES -->
+<section id="industries" class="sec sec-alt">
+  <div class="rv" style="margin-bottom:52px">
+    <div class="eye">Who We Serve</div>
+    <h2 class="stitle">Four Industries.<br/><em>Deep Expertise.</em></h2>
+    <p class="sbody" style="margin-top:12px">We don't dabble. We go deep on four verticals.</p>
+  </div>
+  <div class="ig" id="ig"></div>
+  <div class="mkt-r rv"><span class="mkt-l">Active Markets</span><span class="mkt-t">🇬🇭 Ghana</span><span class="mkt-t">🇬🇧 United Kingdom</span></div>
+</section>
+<div class="dvd"></div>
+
+<!-- PROCESS -->
+<section id="process" class="sec">
+  <div class="rv">
+    <div class="eye">How It Works</div>
+    <h2 class="stitle">Discovery to <em>Live</em><br/>in 2–4 weeks.</h2>
+    <p class="sbody" style="margin-top:12px">Four clear steps. You know where your project is at every point.</p>
+  </div>
+  <div class="prg" id="prg"></div>
+</section>
+<div class="dvd"></div>
+
+<!-- CONTACT -->
+<section id="contact" class="sec sec-alt">
+  <div class="cg">
+    <div class="rv-l">
+      <div class="eye">Get in Touch</div>
+      <h2 class="stitle">One message.<br/><em>One clear plan.</em></h2>
+      <p class="sbody">Tell us what you're building. We'll come back within 24 hours with a clear proposal. No pitch.</p>
+      <div class="cpnt">
+        <div class="cp">
+          <div class="cp-ic"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0l-9.75 6.75L2.25 6.75"/></svg></div>
+          <div class="cp-t"><strong>Email</strong><span><a href="mailto:ninaibuildss@gmail.com" style="color:var(--g)">ninaibuildss@gmail.com</a></span></div>
+        </div>
+        <div class="cp">
+          <div class="cp-ic"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+          <div class="cp-t"><strong>Response Time</strong><span>Within 24 hours</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="rv-r">
+      <div class="cf">
+        <!-- FormSubmit sends directly to email — no backend needed -->
+        <form id="contact-form" action="https://formsubmit.co/ninaibuildss@gmail.com" method="POST">
+          <input type="hidden" name="_subject" value="New Enquiry — NIN Website"/>
+          <input type="hidden" name="_template" value="table"/>
+          <input type="hidden" name="_captcha" value="false"/>
+          <input type="hidden" name="_next" value="http://localhost:3000#contact"/>
+          <div class="fr">
+            <div class="fg"><label>Name</label><input type="text" name="name" placeholder="Your name" required/></div>
+            <div class="fg"><label>Email</label><input type="email" name="email" placeholder="you@company.com" required/></div>
+          </div>
+          <div class="fg">
+            <label>Service of Interest</label>
+            <select name="service">
+              <option value="">Not sure yet…</option>
+              <option>Chatbots</option><option>Lead Generation</option><option>Outreach Automation</option>
+              <option>CRM Automation</option><option>Sales Pipeline Automation</option><option>Customer Support Agents</option>
+              <option>Internal Operations Workflow</option><option>Voice Agents</option>
+              <option>Content &amp; Social Automation</option><option>Multi-Agent Systems</option>
+            </select>
+          </div>
+          <div class="fg"><label>Message</label><textarea name="message" placeholder="Tell us about your business and what you want to automate…" required></textarea></div>
+          <button type="submit" class="btn btn-g" style="width:100%;justify-content:center">
+            Send Message
+            <svg class="asv" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+          </button>
+          <p class="fnote">We respond within 24 hours with a clear, no-fluff proposal.</p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<div id="cta">
+  <div class="cta-orb"></div>
+  <div class="cta-in">
+    <div class="cta-l rv">
+      <div class="eye">Ready?</div>
+      <h2 class="stitle">Your business.<br/><span class="gg">Automated.</span></h2>
+      <p>Pick a package, send a message, and we'll have your automation blueprint ready within 48 hours.</p>
+    </div>
+    <div class="cta-r rv" style="transition-delay:.14s">
+      <a class="btn btn-g" href="#pricing">
+        Order a System
+        <svg class="asv" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+      </a>
+      <a class="cta-em" href="mailto:ninaibuildss@gmail.com">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0l-9.75 6.75L2.25 6.75"/></svg>
+        ninaibuildss@gmail.com
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ft">
+    <div class="fb">
+      <a href="#hero" class="nlogo">
+        <div class="nlogo-mark">
+          <img src="NIN logo.png" alt="NIN" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/>
+          <svg class="svg-fb" viewBox="0 0 440 470" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="60,400 162,400 172,80 70,80" fill="url(#gG)"/>
+            <polygon points="195,248 246,248 252,80 201,80" fill="url(#gDa)"/>
+            <polygon points="190,400 241,400 247,262 196,262" fill="url(#gDb)"/>
+            <polygon points="270,400 368,400 376,80 278,80" fill="url(#gG)"/>
+            <text x="219" y="450" text-anchor="middle" fill="#F5F5F0" font-family="Space Grotesk,sans-serif" font-size="32" font-weight="300" letter-spacing="20">NIN</text>
+          </svg>
+        </div>
+        <span class="nlogo-word">NIN</span>
+      </a>
+      <p>AI automation agency. Founded in high school. Operating across Ghana and the UK. Systems that scale.</p>
+    </div>
+    <div class="fc"><h5>Site</h5><ul>
+      <li><a href="#about">About</a></li><li><a href="#team">Team</a></li>
+      <li><a href="#services">Services</a></li><li><a href="#pricing">Pricing</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul></div>
+    <div class="fc"><h5>Services</h5><ul>
+      <li><a href="#services">Chatbots</a></li><li><a href="#services">Lead Generation</a></li>
+      <li><a href="#services">CRM Automation</a></li><li><a href="#services">Voice Agents</a></li>
+      <li><a href="#services">Multi-Agent Systems</a></li>
+    </ul></div>
+    <div class="fc"><h5>Contact</h5><ul>
+      <li><a href="mailto:ninaibuildss@gmail.com">ninaibuildss@gmail.com</a></li>
+      <li><a href="#contact">Book a Discovery Call</a></li>
+      <li><a href="#pricing">View Pricing</a></li>
+    </ul></div>
+  </div>
+  <div class="fbot">
+    <p>© 2026 NIN. All rights reserved.</p>
+    <a href="mailto:ninaibuildss@gmail.com">ninaibuildss@gmail.com</a>
+    <p style="color:rgba(201,168,76,.3)">Built by the NIN founders.</p>
+  </div>
+</footer>
+
+<!-- ORDER MODAL — multi-step questionnaire -->
+<div id="overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div id="modal-form-area">
+      <h3>Place Your Order</h3>
+      <p class="modal-sub">Answer a few quick questions so we can scope your project properly.</p>
+      <div id="modal-svc-badge" class="modal-svc"></div>
+      <!-- step indicator -->
+      <div class="step-indicator">
+        <div class="step-dot active" id="sd1">1</div>
+        <div class="step-line"></div>
+        <div class="step-dot" id="sd2">2</div>
+        <div class="step-line"></div>
+        <div class="step-dot" id="sd3">3</div>
+        <div class="step-line"></div>
+        <div class="step-dot" id="sd4">4</div>
+      </div>
+
+      <!-- Step 1: What are you building -->
+      <div class="step-pane active" id="sp1">
+        <p style="font-size:15px;color:var(--m);margin-bottom:18px;font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:var(--w)">What do you want to automate?</p>
+        <div class="option-grid" id="step1-opts">
+          <button class="opt" onclick="toggleOpt(this)">Customer-facing chatbot</button>
+          <button class="opt" onclick="toggleOpt(this)">Lead generation & capture</button>
+          <button class="opt" onclick="toggleOpt(this)">CRM & sales pipeline</button>
+          <button class="opt" onclick="toggleOpt(this)">Outreach & email sequences</button>
+          <button class="opt" onclick="toggleOpt(this)">Internal operations & workflows</button>
+          <button class="opt" onclick="toggleOpt(this)">Voice agent for calls</button>
+          <button class="opt" onclick="toggleOpt(this)">Content & social media</button>
+          <button class="opt" onclick="toggleOpt(this)">Full automation suite</button>
+        </div>
+        <div class="step-nav">
+          <button class="btn btn-g" style="flex:1;justify-content:center" onclick="goStep(2)">Next →</button>
+        </div>
+      </div>
+
+      <!-- Step 2: Business info -->
+      <div class="step-pane" id="sp2">
+        <p style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:var(--w);margin-bottom:18px">Tell us about your business.</p>
+        <div class="fg">
+          <label>Industry</label>
+          <select id="o-industry">
+            <option value="">Select your industry</option>
+            <option>Clinic / Healthcare</option><option>Real Estate</option><option>Gym / Fitness</option>
+            <option>Construction</option><option>E-commerce</option><option>Professional Services</option>
+            <option>Education</option><option>Hospitality</option><option>Other</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Team size</label>
+          <select id="o-size">
+            <option value="">Select team size</option>
+            <option>Just me (solo)</option><option>2–5 people</option><option>6–20 people</option>
+            <option>21–50 people</option><option>50+ people</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Monthly revenue range</label>
+          <select id="o-revenue">
+            <option value="">Select range</option>
+            <option>Pre-revenue / just starting</option><option>Under £5k/month</option>
+            <option>£5k–£20k/month</option><option>£20k–£100k/month</option><option>£100k+/month</option>
+          </select>
+        </div>
+        <div class="step-nav">
+          <button class="btn btn-o" style="flex:1;justify-content:center" onclick="goStep(1)">← Back</button>
+          <button class="btn btn-g" style="flex:2;justify-content:center" onclick="goStep(3)">Next →</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Budget & timeline -->
+      <div class="step-pane" id="sp3">
+        <p style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:var(--w);margin-bottom:18px">Budget &amp; timeline.</p>
+        <div class="fg">
+          <label>Budget range</label>
+          <select id="o-budget">
+            <option value="">Select budget</option>
+            <option>Under £500</option><option>£500–£1,000</option><option>£1,000–£3,000</option>
+            <option>£3,000–£10,000</option><option>£10,000+</option><option>Not sure yet</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>When do you need this live?</label>
+          <select id="o-timeline">
+            <option value="">Select timeline</option>
+            <option>ASAP (within 2 weeks)</option><option>Within a month</option>
+            <option>1–3 months</option><option>Flexible</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Any tools you're currently using? (optional)</label>
+          <input type="text" id="o-tools" placeholder="e.g. HubSpot, WhatsApp, Shopify…"/>
+        </div>
+        <div class="step-nav">
+          <button class="btn btn-o" style="flex:1;justify-content:center" onclick="goStep(2)">← Back</button>
+          <button class="btn btn-g" style="flex:2;justify-content:center" onclick="goStep(4)">Next →</button>
+        </div>
+      </div>
+
+      <!-- Step 4: Contact details -->
+      <div class="step-pane" id="sp4">
+        <p style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:var(--w);margin-bottom:18px">Last step — your details.</p>
+        <div class="fr">
+          <div class="fg"><label>Your Name</label><input type="text" id="o-name" placeholder="Full name" required/></div>
+          <div class="fg"><label>Email</label><input type="email" id="o-email" placeholder="you@company.com" required/></div>
+        </div>
+        <div class="fg"><label>Company / Business Name</label><input type="text" id="o-company" placeholder="Optional"/></div>
+        <div class="fg"><label>Anything else we should know?</label><textarea id="o-msg" placeholder="Specific requirements, pain points, or questions…" style="height:90px"></textarea></div>
+        <div class="step-nav">
+          <button class="btn btn-o" style="flex:1;justify-content:center" onclick="goStep(3)">← Back</button>
+          <button class="btn btn-g" style="flex:2;justify-content:center" onclick="submitOrder()">
+            Submit Order →
+          </button>
+        </div>
+        <p class="fnote" style="margin-top:12px">We'll respond within 24 hours with a tailored proposal.</p>
+      </div>
+    </div>
+
+    <!-- Success state -->
+    <div class="modal-success" id="modal-success">
+      <div class="s-icon">✓</div>
+      <h4>Order Received.</h4>
+      <p style="margin-bottom:20px">Your order is being sent to ninaibuildss@gmail.com right now. We'll be in touch within 24 hours.</p>
+      <button class="btn btn-g" style="margin:0 auto" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- CHAT -->
+<button id="cbtn" aria-label="Chat with NIN AI">
+  <div class="cpls"></div>
+  <svg class="ic-ch" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+  <svg class="ic-cl" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+</button>
+<div id="cpanel">
+  <div class="ch">
+    <div class="cav">N</div>
+    <div class="cmeta"><div class="cn">NIN Assistant</div><div class="cs"><div class="sdot"></div>AI · Online</div></div>
+  </div>
+  <div class="cmsgs" id="cmsgs"></div>
+  <div class="cchips" id="cchips">
+    <button class="chip" onclick="ss(this)">What do you offer?</button>
+    <button class="chip" onclick="ss(this)">How much does it cost?</button>
+    <button class="chip" onclick="ss(this)">How do I order?</button>
+  </div>
+  <div class="cinp">
+    <input id="cin" type="text" placeholder="Ask anything…" autocomplete="off"/>
+    <button id="cgo"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg></button>
+  </div>
+</div>
+
+<script>
+/* scroll progress */
+const spb=document.getElementById('spb');
+window.addEventListener('scroll',()=>{const s=document.documentElement;spb.style.width=(s.scrollTop/(s.scrollHeight-s.clientHeight)*100)+'%'},{passive:true});
+
+/* cursor */
+const cd=document.getElementById('cd'),cr=document.getElementById('cr');
+let mx=-200,my=-200,rx=-200,ry=-200;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+(function loop(){cd.style.left=mx+'px';cd.style.top=my+'px';rx+=(mx-rx)*.12;ry+=(my-ry)*.12;cr.style.left=rx+'px';cr.style.top=ry+'px';requestAnimationFrame(loop)})();
+document.querySelectorAll('a,button,input,select,textarea,.chip,.opt').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cr.style.width='48px';cr.style.height='48px';cr.style.borderColor='rgba(201,168,76,.85)';cd.style.opacity='0'});
+  el.addEventListener('mouseleave',()=>{cr.style.width='30px';cr.style.height='30px';cr.style.borderColor='rgba(201,168,76,.5)';cd.style.opacity='1'});
+});
+
+/* ripple */
+document.querySelectorAll('.btn').forEach(btn=>{
+  btn.addEventListener('click',e=>{
+    const r=btn.getBoundingClientRect(),rpl=document.createElement('span'),sz=Math.max(btn.clientWidth,btn.clientHeight);
+    rpl.className='rpl';Object.assign(rpl.style,{width:sz+'px',height:sz+'px',left:(e.clientX-r.left-sz/2)+'px',top:(e.clientY-r.top-sz/2)+'px'});
+    btn.appendChild(rpl);rpl.addEventListener('animationend',()=>rpl.remove());
+  });
+});
+
+/* magnetic buttons */
+document.querySelectorAll('.btn-g').forEach(b=>{
+  b.addEventListener('mousemove',e=>{const r=b.getBoundingClientRect();b.style.transform=`translate(${(e.clientX-r.left-r.width/2)*.18}px,${(e.clientY-r.top-r.height/2)*.18}px) translateY(-2px)`});
+  b.addEventListener('mouseleave',()=>{b.style.transform=''});
+});
+
+/* canvas particles */
+(()=>{
+  const cv=document.getElementById('hcv'),ctx=cv.getContext('2d');
+  let W,H,pts=[];
+  function resize(){W=cv.width=cv.offsetWidth;H=cv.height=cv.offsetHeight;init()}
+  function init(){pts=[];const n=Math.floor(W*H/11000);for(let i=0;i<n;i++)pts.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.4+.3,vx:(Math.random()-.5)*.22,vy:(Math.random()-.5)*.22,o:Math.random()*.65+.2})}
+  resize();window.addEventListener('resize',resize);
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,6.28);ctx.fillStyle=`rgba(201,168,76,${p.o})`;ctx.fill()});
+    for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<105){ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.strokeStyle=`rgba(201,168,76,${.1*(1-d/105)})`;ctx.lineWidth=.6;ctx.stroke()}}
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* nav */
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>nav.classList.toggle('on',scrollY>60),{passive:true});
+const hbg=document.getElementById('hbg'),mob=document.getElementById('mob');
+hbg.addEventListener('click',()=>{hbg.classList.toggle('on');mob.classList.toggle('on');document.body.style.overflow=mob.classList.contains('on')?'hidden':''});
+window.cm=()=>{hbg.classList.remove('on');mob.classList.remove('on');document.body.style.overflow=''};
+
+/* marquee */
+const svcs=['Chatbots','Lead Generation','Outreach Automation','CRM Automation','Sales Pipeline Automation','Customer Support Agents','Internal Operations Workflow','Voice Agents','Content & Social Automation','Multi-Agent Systems'];
+document.getElementById('mqt').innerHTML=[...svcs,...svcs,...svcs,...svcs].map(s=>`<span class="mi">${s}</span>`).join('');
+
+/* service cards */
+const svcData=[
+  {t:'Chatbots',d:'AI agents trained on your brand, deployed on your website, WhatsApp, and Instagram DMs. 24/7 — no staff required.'},
+  {t:'Lead Generation',d:'Automated funnels that capture, qualify, and route high-intent leads straight to your pipeline without manual work.'},
+  {t:'Outreach Automation',d:'Personalised email and DM sequences at scale. Every message is contextually relevant — set once, runs forever.'},
+  {t:'CRM Automation',d:'Your CRM stays up to date automatically — contacts tagged, deals created, data entered — in real time.'},
+  {t:'Sales Pipeline',d:'Deals move themselves. Follow-ups trigger. Alerts fire. Your team only touches deals when it\'s time to close.'},
+  {t:'Customer Support Agents',d:'Instant answers to common questions. Complex issues escalated immediately. Support running 24/7.'},
+  {t:'Internal Operations',d:'Approvals, reporting, onboarding, task routing — all automated. Work on what matters, not admin.'},
+  {t:'Voice Agents',d:'AI-powered phone agents that handle inbound calls, book appointments, and answer questions. Any hour, any day.'},
+  {t:'Content & Social',d:'Research, draft, schedule, publish — fully automated. Your brand shows up consistently without the effort.'},
+  {t:'Multi-Agent Systems',d:'Coordinated AI networks that execute complex, multi-step business processes at scale. Built for demanding operations.'},
+];
+document.getElementById('sg').innerHTML=svcData.map((s,i)=>`
+<div class="sc rv" style="transition-delay:${(i%5)*.07}s">
+  <div class="scn">${String(i+1).padStart(2,'0')}</div>
+  <h3 class="sct">${s.t}</h3>
+  <p class="scd">${s.d}</p>
+  <button class="sc-order" onclick="openModal('${s.t}')">Order Now →</button>
+</div>`).join('');
+
+/* 3d tilt on cards */
+document.querySelectorAll('.sc,.pc').forEach(card=>{
+  card.addEventListener('mousemove',e=>{const r=card.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;card.style.transform=`perspective(900px) rotateX(${((e.clientY-cy)/r.height)*7}deg) rotateY(${((e.clientX-cx)/r.width)*-7}deg) translateY(-4px)`});
+  card.addEventListener('mouseleave',()=>{card.style.transform=''});
+});
+
+/* pricing */
+const plans=[
+  {name:'Starter',price:'499',period:'/month',badge:null,feat:false,inc:['One automation system (your choice)','Chatbot OR lead gen OR CRM','WhatsApp + website deployment','Monthly performance report','14-day support post-launch'],exc:['Multi-agent systems','Voice AI','3+ integrations']},
+  {name:'Growth',price:'999',period:'/month',badge:'Most Popular',feat:true,inc:['Three automation systems','Chatbot + Lead Gen + CRM','Full pipeline automation','Outreach sequences included','Weekly performance reviews','Priority 48hr support'],exc:['Multi-agent systems']},
+  {name:'Scale',price:'Custom',period:'',badge:'Enterprise',feat:false,inc:['Full automation suite — all 10','Multi-agent system architecture','Voice agents included','Dedicated account manager','Custom integrations (any stack)','SLA + ongoing optimisation'],exc:[]},
+];
+document.getElementById('pg3').innerHTML=plans.map(p=>`
+<div class="pc${p.feat?' feat':''}">
+  <div class="pc-in">
+    ${p.badge?`<div class="pc-badge">${p.badge}</div>`:'<div style="height:28px"></div>'}
+    <div class="pc-name">${p.name}</div>
+    <div class="pc-price">${p.price==='Custom'?'Custom':'<sup>£</sup>'+p.price}</div>
+    <div class="pc-period">${p.period||'talk to us'}</div>
+    <ul class="pc-ul">
+      ${p.inc.map(f=>`<li>${f}</li>`).join('')}
+      ${p.exc.map(f=>`<li class="dim">${f}</li>`).join('')}
+    </ul>
+    <button class="btn ${p.feat?'btn-g':'btn-o'}" style="width:100%;justify-content:center" onclick="openModal('${p.name} Plan')">
+      ${p.price==='Custom'?'Get a Quote →':'Order Now →'}
+    </button>
+  </div>
+</div>`).join('');
+
+/* industries */
+const indData=[
+  {i:'🏥',n:'Clinics',d:'Appointment bots, patient follow-up sequences, intake automation, and after-care messaging.'},
+  {i:'🏢',n:'Real Estate',d:'Lead capture, property enquiry agents, automated CRM sync, and client nurture pipelines.'},
+  {i:'💪',n:'Gyms',d:'Member onboarding, class booking bots, renewal reminders, and retention campaign automation.'},
+  {i:'🏗️',n:'Construction',d:'Project update workflows, automated client reporting, subcontractor coordination systems.'},
+];
+document.getElementById('ig').innerHTML=indData.map((d,i)=>`
+<div class="ic rv" style="transition-delay:${i*.1}s">
+  <div class="ici">${d.i}</div><h3 class="icn">${d.n}</h3><p class="icd">${d.d}</p>
+</div>`).join('');
+
+/* process */
+const procData=[
+  {n:'01',t:'Discovery',d:'We audit your workflows, map your customer journey, and identify where automation creates the most value.'},
+  {n:'02',t:'Blueprint',d:'We design the full system — every flow, integration, and agent — before touching code. You approve first.'},
+  {n:'03',t:'Build',d:'We develop, connect, and test everything end-to-end. Regular updates throughout — no black box.'},
+  {n:'04',t:'Deploy',d:'We go live, monitor in real time, and iterate until every metric is where it needs to be.'},
+];
+document.getElementById('prg').innerHTML=procData.map((s,i)=>`
+<div class="ps rv" style="transition-delay:${i*.12}s">
+  <div class="psn">${s.n}</div><h3 class="pst">${s.t}</h3><p class="psd">${s.d}</p>
+</div>`).join('');
+
+/* scroll reveal */
+const io=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target)}})},{threshold:.08,rootMargin:'0px 0px -24px 0px'});
+setTimeout(()=>document.querySelectorAll('.rv,.rv-l,.rv-r').forEach(el=>io.observe(el)),80);
+
+/* stat counters */
+const sio=new IntersectionObserver(e=>{e.forEach(x=>{if(!x.isIntersecting)return;const el=x.target.querySelector('.stn'),target=+el.dataset.t,dur=1400,step=1000/60;let c=0,elapsed=0;const tick=()=>{elapsed+=step;c=Math.round(target*Math.min(elapsed/dur,1));el.textContent=c;if(c<target)setTimeout(tick,step)};setTimeout(tick,150);sio.unobserve(x.target)})},{threshold:.5});
+document.querySelectorAll('.st').forEach(el=>sio.observe(el));
+
+/* ── ORDER MODAL ─────────────────────────────────────── */
+let currentSvc='', currentStep=1;
+
+window.openModal=function(svc){
+  currentSvc=svc;currentStep=1;
+  document.getElementById('modal-svc-badge').textContent=svc;
+  document.getElementById('modal-form-area').style.display='block';
+  document.getElementById('modal-success').style.display='none';
+  goStep(1);
+  document.getElementById('overlay').classList.add('on');
+  document.body.style.overflow='hidden';
+};
+window.closeModal=function(){
+  document.getElementById('overlay').classList.remove('on');
+  document.body.style.overflow='';
+};
+document.getElementById('overlay').addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+
+window.goStep=function(n){
+  currentStep=n;
+  document.querySelectorAll('.step-pane').forEach(p=>p.classList.remove('active'));
+  document.getElementById('sp'+n).classList.add('active');
+  document.querySelectorAll('.step-dot').forEach((d,i)=>{
+    d.classList.remove('active','done');
+    if(i+1<n)d.classList.add('done');
+    else if(i+1===n)d.classList.add('active');
+  });
+};
+
+window.toggleOpt=function(btn){btn.classList.toggle('sel')};
+
+window.submitOrder=function(){
+  const name=document.getElementById('o-name').value.trim();
+  const email=document.getElementById('o-email').value.trim();
+  if(!name||!email){alert('Please fill in your name and email.');return}
+
+  const selected=[...document.querySelectorAll('.opt.sel')].map(b=>b.textContent).join(', ')||'Not specified';
+  const body=encodeURIComponent([
+    `ORDER — ${currentSvc}`,`${'─'.repeat(40)}`,
+    `Name: ${name}`,
+    `Email: ${email}`,
+    document.getElementById('o-company').value?`Company: ${document.getElementById('o-company').value}`:'',
+    ``,`WHAT TO AUTOMATE: ${selected}`,
+    `Industry: ${document.getElementById('o-industry').value||'Not specified'}`,
+    `Team size: ${document.getElementById('o-size').value||'Not specified'}`,
+    `Revenue: ${document.getElementById('o-revenue').value||'Not specified'}`,
+    `Budget: ${document.getElementById('o-budget').value||'Not specified'}`,
+    `Timeline: ${document.getElementById('o-timeline').value||'Not specified'}`,
+    `Current tools: ${document.getElementById('o-tools').value||'None listed'}`,
+    ``,`Additional notes:`,
+    document.getElementById('o-msg').value||'None.',
+    ``,`${'─'.repeat(40)}`,`Sent via NIN website.`
+  ].filter(Boolean).join('\n'));
+  const subject=encodeURIComponent(`ORDER: ${currentSvc} — ${name}`);
+  window.location.href=`mailto:ninaibuildss@gmail.com?subject=${subject}&body=${body}`;
+
+  // show success
+  document.getElementById('modal-form-area').style.display='none';
+  document.getElementById('modal-success').style.display='block';
+};
+
+/* ── AI CHAT ─────────────────────────────────────────── */
+const SP=`You are the AI assistant for NIN, an elite AI automation agency. Answer ANY question confidently — about NIN, AI, automation, pricing, how things work, or anything else.
+
+NIN facts:
+- Three founders: Nohlan Tax-Valence, Ishan Patnaik, Nana Kwesi
+- Founded in high school, from scratch, no shortcuts
+- Tagline: "Systems That Scale."
+- 10 services: Chatbots, Lead Generation, Outreach Automation, CRM Automation, Sales Pipeline Automation, Customer Support Agents, Internal Operations Workflow, Voice Agents, Content & Social Automation, Multi-Agent Systems
+- Pricing: Starter £499/mo (1 system), Growth £999/mo (3 systems), Scale custom (all 10)
+- Industries: Clinics, Real Estate, Gyms, Construction
+- Markets: Ghana and UK
+- Contact: ninaibuildss@gmail.com
+Tone: direct, sharp, confident. No filler. Push toward ordering when relevant.`;
+
+const cbtn=document.getElementById('cbtn'),cpanel=document.getElementById('cpanel');
+const cmsgs=document.getElementById('cmsgs'),cin=document.getElementById('cin'),cgo=document.getElementById('cgo'),cchips=document.getElementById('cchips');
+let hist=[],busy=false;
+function ts(){return new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}
+function addMsg(txt,role){const w=document.createElement('div');w.className='cmsg '+role;const f=txt.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');w.innerHTML=`<div class="bbl">${f}</div><div class="mts">${ts()}</div>`;cmsgs.appendChild(w);cmsgs.scrollTop=cmsgs.scrollHeight}
+function showTyping(){const w=document.createElement('div');w.className='cmsg b';w.id='tw';w.innerHTML=`<div class="typ"><span></span><span></span><span></span></div>`;cmsgs.appendChild(w);cmsgs.scrollTop=cmsgs.scrollHeight;return w}
+async function sendMsg(txt){
+  txt=txt.trim();if(!txt||busy)return;
+  cchips.style.display='none';cin.value='';addMsg(txt,'u');
+  busy=true;cin.disabled=true;cgo.disabled=true;hist.push({role:'user',content:txt});const tw=showTyping();
+  try{
+    const res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1024,system:SP,messages:hist})});
+    if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error?.message||`Error ${res.status}`)}
+    const data=await res.json(),reply=data.content[0].text;
+    hist.push({role:'assistant',content:reply});tw.remove();addMsg(reply,'b');
+  }catch(err){tw.remove();addMsg(`Something went wrong. Email us: ninaibuildss@gmail.com\n(${err.message})`,'b');}
+  finally{busy=false;cin.disabled=false;cgo.disabled=false;cin.focus()}
+}
+window.ss=b=>sendMsg(b.textContent);
+cgo.addEventListener('click',()=>sendMsg(cin.value));
+cin.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey)sendMsg(cin.value)});
+cbtn.addEventListener('click',()=>{
+  const o=cpanel.classList.toggle('on');cbtn.classList.toggle('on',o);
+  if(o&&cmsgs.childElementCount===0)setTimeout(()=>addMsg(`Hey 👋 I'm the NIN AI assistant. Ask me anything — services, pricing, how we work, or anything else.`,'b'),320);
+  if(o)setTimeout(()=>cin.focus(),360);
+});
+</script>
+</body>
+</html>
